@@ -1,0 +1,110 @@
+﻿@model IEnumerable<ECommerce.Models.Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<script>
+    function SelectProduct(event) {
+
+        var sData = {
+            productId: event
+        };
+        $.ajax({
+
+            url: "/Home/ViewProduct",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result) {
+
+                $("#labelId").text(result.id); 
+                $("#labelName").text(result.productName); 
+                $("#labelDescription").text(result.description); 
+                $("#labelPrice").text(result.price);
+                $('#viewImg').attr('src',result.image);
+
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
+
+         $("#MyModal").modal("toggle");
+    }
+    
+</script>
+
+
+<div class="album py-5 bg-light">
+    <div class="container">
+
+        <div class="row">
+
+            @foreach (var item in Model)
+            {
+                var img = item.Image;
+
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img src="@img" width="100%" class="img-responsive" />
+                        <div class="card-body">
+                            <p class="card-text font-weight-bold text-length">@item.ProductName</p>
+                            <p class="card-text">This is a wider card with supporting</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button id="viewBtn" type="button" class="btn btn-sm btn-outline-secondary" onclick="SelectProduct(@item.Id)">Detail</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Add to Card</button>
+                                </div>
+                                <small class="text-muted">100</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+    </div>
+</div>
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#">Back to top</a>
+        </p>
+        <p>Album example is © Bootstrap, but please download and customize it for yourself!</p>
+        <p>New to Bootstrap? <a href="https://getbootstrap.com/">Visit the homepage</a> or read our <a href="/docs/4.4/getting-started/introduction/">getting started guide</a>.</p>
+    </div>
+</footer>
+
+<div class="modal fade product_view" id="MyModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" class="class pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="viewImg" src="" width="100%" class="img-responsive">
+                    </div>
+                    <div class="col-md-8">
+                        <label>Product Id:</label>
+                        <label id="labelId"></label>
+                        <br />
+                        <label>Product Name:</label>
+                        <label id="labelName"></label>
+                        <br />
+                        <label id="labelDescription"></label>
+                        <label id="labelPrice"></label>
+                        <br />
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
