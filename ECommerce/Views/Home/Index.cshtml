@@ -2,7 +2,19 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<!--Funcybox-->
+
+
+
 <script>
+    function asd() {
+
+
+        $("a#viewImg1").fancybox();
+
+    }
+
     function SelectProduct(event) {
 
         var sData = {
@@ -17,11 +29,16 @@
             cache: false,
             success: function (result) {
 
-                $("#labelId").text(result.id); 
-                $("#labelName").text(result.productName); 
-                $("#labelDescription").text(result.description); 
-                $("#labelPrice").text(result.price);
-                $('#viewImg').attr('src',result.image);
+                $("#labelCode").text(result.productCode);
+                $("#labelName").text(result.productName);
+                $("#labelDescription").text(result.description);
+                $("#labelPrice").text("$" + result.price);
+                //$('#viewImg').attr('src', result.image);
+                $('#viewImg1').attr('href', result.image);
+                $('#viewImg2').attr('src', result.image);
+
+                $('#labelCategory').text(result.category);
+                $('#labelStock').text(result.quantity);
 
             },
             error: function (jqXHR, textStatus) {
@@ -29,9 +46,9 @@
             }
         });
 
-         $("#MyModal").modal("toggle");
+        $("#MyModal").modal("toggle");
     }
-    
+
 </script>
 
 
@@ -46,16 +63,21 @@
 
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
+
+
                         <img src="@img" width="100%" class="img-responsive" />
                         <div class="card-body">
                             <p class="card-text font-weight-bold text-length">@item.ProductName</p>
-                            <p class="card-text">This is a wider card with supporting</p>
+                            <p class="card-text">This is a wider card with supporting supportingsupportingsupportingsupportingsupporting</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button id="viewBtn" type="button" class="btn btn-sm btn-outline-secondary" onclick="SelectProduct(@item.Id)">Detail</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Add to Card</button>
+                                    <button id="viewBtn" type="button" class="btn btn-sm btn-info" onclick="SelectProduct(@item.Id)">Detail</button>
+
+                                    <button type="button" class="btn btn-sm btn-success">Add to Card</button>
                                 </div>
-                                <small class="text-muted">100</small>
+                                <small class="instock btn btn-warning"><i class="fas fa-cubes"></i> 100</small>
+                                <img class="priceimg" src="~/img/price.jpg" />
+                                <small class="price">$79,90</small>
                             </div>
                         </div>
                     </div>
@@ -85,26 +107,69 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img id="viewImg" src="" width="100%" class="img-responsive">
+                        @*<img id="viewImg" src="" width="100%" class="img-responsive">*@
+                        @*<a id="viewImg1" href="" onclick="asd()"><img id="viewImg2" src="" /></a>*@
+                        <a id="viewImg1" href="#" class="thumbnail" data-toggle="modal" data-target="#lightbox">
+                            <img id="viewImg2" src=""  width="250" height="250">
+                        </a>
+
+
                     </div>
                     <div class="col-md-8">
-                        <label>Product Id:</label>
-                        <label id="labelId"></label>
-                        <br />
-                        <label>Product Name:</label>
-                        <label id="labelName"></label>
-                        <br />
-                        <label id="labelDescription"></label>
-                        <label id="labelPrice"></label>
-                        <br />
+
+                        <p><label class="headertext" id="labelName"></label></p>
+                        <p><label class="headertext" id="labelCode"></label></p>
+                        <p><label class="headertext" id="labelPrice"></label></p>
+                        <p><label class="headertext" id="labelCategory"></label></p>
 
 
-
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="number" class="form-control text-center " value="1">
+                            </div>
+                            <div class="col-md-4" style="margin-top:4px;">
+                                <button type="button" class="btn btn-sm btn-success">Add to Card</button>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
+
+                <!-- Tab panes -->
+                <div style="padding:30px">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#home">Description</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#menu1">İnfo</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content textsize">
+                        <div id="home" class="container tab-pane active">
+                            <span id="labelDescription"></span>
+                        </div>
+                        <div id="menu1" class="container tab-pane fade">
+                            <span>This Menu1 page description area.</span>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Tab panes end -->
             </div>
         </div>
     </div>
 </div>
-
+<!-- LightBox -->
+<div id="lightbox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <button type="button" class="close hidden" data-dismiss="modal" aria-hidden="true">×</button>
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" alt="" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- LightBox End -->

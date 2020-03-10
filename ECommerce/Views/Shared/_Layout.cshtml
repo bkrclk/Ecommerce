@@ -6,7 +6,13 @@
     <title>@ViewData["Title"] - ECommerce</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--Font Awesome-->
+    <script src="~/lib/fontawesome/js/all.min.js"></script>
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+
+    
+
 </head>
 <body>
     <header>
@@ -49,18 +55,21 @@
         </div>
     </header>
 
-    
-  
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-   
+
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - ECommerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+
+
 
 
 
