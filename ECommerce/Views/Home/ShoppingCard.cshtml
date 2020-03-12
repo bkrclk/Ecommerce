@@ -1,54 +1,41 @@
-﻿
+﻿@model IEnumerable<ECommerce.Models.Product>
 @{
     ViewData["Title"] = "ShoppingCard";
 }
+<script>
+    function DeleteProduct(productId) {
 
-    <div class="container">
-        <table id="cart" class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th style="width:50%">Product</th>
-                    <th style="width:10%">Price</th>
-                    <th style="width:5%">Quantity</th>
-                    <th style="width:20%" class="text-center">Subtotal</th>
-                    <th style="width:15%"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td data-th="Product">
-                        <div class="row">
-                            <div class="col-sm-3 hidden-xs"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRwz9uKeS7xAfT8OpjXpS437u818bShoNoLnFXzhM81LgyYHj9a" width="100" height="100" alt="..." class="img-responsive" /></div>
-                            <div class="col-sm-9">
-                                <div class="row">
-                                    <h4 class="nomargin">GUW1107G3 Men's Wristwatch</h4>
-                                    <p>Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td data-th="Price">$150.00</td>
-                    <td data-th="Quantity">
-                        <input type="number" class="form-control text-center" value="1">
-                    </td>
-                    <td data-th="Subtotal" class="text-center">150.00</td>
-                    <td class="actions" data-th="">
-                        <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
-                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-               
-                <tr>
-                    <td><a href="#" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
-                    <td colspan="2" class="hidden-xs"></td>
-                    <td class="hidden-xs text-center"><strong>Total $150.00</strong></td>
-                    <td><a href="#" class="btn btn-success">Checkout <i class="fa fa-angle-right"></i></a></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+    var sData = {
+            productId: productId
+        };
+        $.ajax({
+
+            url: "/Home/DeleteToCard",
+            data: sData,
+            type: "GET",
+            dataType: "html",
+            cache: false,
+            success: function (result) {
+                $("#tblBasketList").html(result);
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
+    }
+    function PriceUpdate(value) {
+
+        var price = $("#labelPrc2").text().split(',').join('.');
+        
+        var total =  price  * value;
+        
+
+        $("#labelSubTotal").text(total.toFixed(2));
+    }
+</script>
+<div class="container" id="tblBasketList">
+    @await Html.PartialAsync("_BasketPartial", Model)
+</div>
 
 
 

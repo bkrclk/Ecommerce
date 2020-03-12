@@ -3,22 +3,58 @@
     ViewData["Title"] = "Home Page";
 }
 
-<!--Funcybox-->
-
-
-
 <script>
-    function asd() {
 
+    function AddProductView() {
+        var productId = $("#labelId").text();
+        AddProduct(productId);
+    }
 
-        $("a#viewImg1").fancybox();
+    function AddProduct(productId) {
+        var sData = {
+            productId: productId
+        };
+        $.ajax({
+
+            url: "/Home/AddToCard",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result) {
+
+                //alert("Ürün eklendi")
+                Swal.fire({
+                    text: "Ürün sepete eklensin mi?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28A745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet',
+                    cancelButtonText: 'İptal',
+                    
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.fire(
+                            'Ürün Eklendi!',
+                            'Sepete ekleme başarılı.',
+                            'success'
+                        )
+                    }
+                })
+               
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
+
 
     }
 
-    function SelectProduct(event) {
-
+    function SelectProduct(productId) {
         var sData = {
-            productId: event
+            productId: productId
         };
         $.ajax({
 
@@ -29,14 +65,13 @@
             cache: false,
             success: function (result) {
 
+                $("#labelId").text(result.id);
                 $("#labelCode").text(result.productCode);
                 $("#labelName").text(result.productName);
                 $("#labelDescription").text(result.description);
                 $("#labelPrice").text("$" + result.price);
-                //$('#viewImg').attr('src', result.image);
                 $('#viewImg1').attr('href', result.image);
                 $('#viewImg2').attr('src', result.image);
-
                 $('#labelCategory').text(result.category);
                 $('#labelStock').text(result.quantity);
 
@@ -60,7 +95,6 @@
             @foreach (var item in Model)
             {
                 var img = item.Image;
-
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
 
@@ -68,16 +102,16 @@
                         <img src="@img" width="100%" class="img-responsive" />
                         <div class="card-body">
                             <p class="card-text font-weight-bold text-length">@item.ProductName</p>
-                            <p class="card-text">This is a wider card with supporting supportingsupportingsupportingsupportingsupporting</p>
+                            <p class="card-text ikisatıryazi">@item.Description</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button id="viewBtn" type="button" class="btn btn-sm btn-info" onclick="SelectProduct(@item.Id)">Detail</button>
+                                    <button id="viewBtn" type="button" class="btn btn-sm btn-secondary" onclick="SelectProduct(@item.Id)">Detail</button>
 
-                                    <button type="button" class="btn btn-sm btn-success">Add to Card</button>
+                                    <button type="button" class="btn btn-sm btn-success" onclick="AddProduct(@item.Id)">Add to Card</button>
                                 </div>
                                 <small class="instock btn btn-warning"><i class="fas fa-cubes"></i> 100</small>
                                 <img class="priceimg" src="~/img/price.jpg" />
-                                <small class="price">$79,90</small>
+                                <small class="price">$@item.Price</small>
                             </div>
                         </div>
                     </div>
@@ -91,10 +125,8 @@
 <footer class="text-muted">
     <div class="container">
         <p class="float-right">
-            <a href="#">Back to top</a>
+            <a href="#"><i class="fas fa-level-up-alt fa-3x pageup"></i></a>
         </p>
-        <p>Album example is © Bootstrap, but please download and customize it for yourself!</p>
-        <p>New to Bootstrap? <a href="https://getbootstrap.com/">Visit the homepage</a> or read our <a href="/docs/4.4/getting-started/introduction/">getting started guide</a>.</p>
     </div>
 </footer>
 
@@ -107,16 +139,14 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4">
-                        @*<img id="viewImg" src="" width="100%" class="img-responsive">*@
-                        @*<a id="viewImg1" href="" onclick="asd()"><img id="viewImg2" src="" /></a>*@
                         <a id="viewImg1" href="#" class="thumbnail" data-toggle="modal" data-target="#lightbox">
-                            <img id="viewImg2" src=""  width="250" height="250">
+                            <img id="viewImg2" src="" width="250" height="250">
                         </a>
-
 
                     </div>
                     <div class="col-md-8">
 
+                        <p style="display:none"><label class="headertext" id="labelId"></label></p>
                         <p><label class="headertext" id="labelName"></label></p>
                         <p><label class="headertext" id="labelCode"></label></p>
                         <p><label class="headertext" id="labelPrice"></label></p>
@@ -128,14 +158,14 @@
                                 <input type="number" class="form-control text-center " value="1">
                             </div>
                             <div class="col-md-4" style="margin-top:4px;">
-                                <button type="button" class="btn btn-sm btn-success">Add to Card</button>
+                                <button type="button" class="btn btn-sm btn-success" onclick="AddProductView()">Add to Card</button>
                             </div>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- Tab panes -->
+                <!-- Tab -->
                 <div style="padding:30px">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
@@ -156,7 +186,7 @@
 
                     </div>
                 </div>
-                <!-- Tab panes end -->
+                <!-- Tab End -->
             </div>
         </div>
     </div>

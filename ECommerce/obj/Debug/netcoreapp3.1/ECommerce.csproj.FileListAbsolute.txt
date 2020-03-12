@@ -106,4 +106,4 @@ C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\bin\Debug\netcoreapp3.1\zh-H
 C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\obj\Debug\netcoreapp3.1\Razor\Views\Home\ShoppingCard.cshtml.g.cs
 C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\obj\Debug\netcoreapp3.1\ECommerce.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_FancyboxScriptsPartial.cshtml.g.cs
+C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_BasketPartial.cshtml.g.cs

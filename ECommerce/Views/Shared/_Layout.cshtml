@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
+    <!--SweetAlert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
     <!--Font Awesome-->
     <script src="~/lib/fontawesome/js/all.min.js"></script>
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
 
-    
 
 </head>
 <body>
@@ -47,6 +49,7 @@
                     <strong>Shopping</strong>
                 </a>
                 <a href="/Home/ShoppingCard">
+                    <i class="itemcount">@TempData["itemCount"]</i>
                     <img class="navbar-toggler" src="~/img/shopping-basket.png" />
                 </a>
 
@@ -67,12 +70,6 @@
             &copy; 2020 - ECommerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
-
-
-
-
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
