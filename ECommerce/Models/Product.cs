@@ -13,7 +13,10 @@ namespace ECommerce.Models
         public string Description { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
+        public int BasketCount { get; set; }
+        public double TotalPrice { get; set; }
         public string Category { get; set; }
+        public bool InBasket { get; set; }
         public string Image { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace ECommerce.Controllers
         {
             _logger = logger;
             Bind();
+
         }
         public void Bind()
         {
@@ -39,23 +40,22 @@ namespace ECommerce.Controllers
         }
         public IActionResult Index()
         {
-
-            SessionControl();
             return View(Products);
-
         }
 
         public IActionResult ShoppingCard()
         {
             var cart = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
-            if (cart != null)
+            if (cart != null && !cart.Count.Equals(0))
             {
-                TempData["itemCount"] = cart.Count;
+                TempData["itemCount"] = cart.Count();
                 return View(cart);
             }
+            else
+            {
+                TempData["itemCount"] = 0;
+            }
             return View();
-
-
 
         }
 
@@ -82,63 +82,79 @@ namespace ECommerce.Controllers
             return PartialView("_BasketPartial", cardlist);
         }
 
-        public IActionResult AddToCard(int productId)
-        {
 
-            var datas = Products.Where(q => q.Id == productId).FirstOrDefault();
+        public IActionResult AddToCard(int productId, int count)
+        {
+            if (count == 0) count = 1;
+            var product = Products.Where(q => q.Id == productId).FirstOrDefault();
+            product.BasketCount = count;
+            product.TotalPrice = product.Price;
 
             if (SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart") == null)
             {
                 List<Product> cart = new List<Product>();
-                cart.Add(datas);
+                cart.Add(product);
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
             }
             else
             {
-                List<Product> cart = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
-                int index = isExist(productId);
-                if (index != -1)
+                List<Product> cartList = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
+                var itemExist = cartList.FirstOrDefault(q => q.Id == productId);
+                if (cartList.Any(q => q.Id == productId))
                 {
-                    cart[index].Quantity++;
+                    return Json(1);
                 }
                 else
                 {
-                    cart.Add(datas);
+                    cartList.Add(product);
                 }
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cartList);
             }
-
-            SessionControl();
-            return Json(datas);
+            return Json(product);
         }
-        private int isExist(int productId)
+
+        public IActionResult UpdatePrice(int productId, int count)
         {
+            var getProduct = Products.Where(q => q.Id == productId).FirstOrDefault();
+            Product updatePrice = new Product();
             List<Product> cart = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
             for (int i = 0; i < cart.Count; i++)
             {
                 if (cart[i].Id.Equals(productId))
                 {
-                    return i;
+                    cart[i].TotalPrice = getProduct.Price * count;
+                    cart[i].BasketCount = count;
+                    updatePrice = cart[i];
                 }
-            }
-            return -1;
-        }
 
-        public void SessionControl()
+            }
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+
+
+            return Json(updatePrice);
+        }
+        public IActionResult ItemControl()
         {
+            int basketCount = 0;
             var cart = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
             if (cart != null)
             {
-                TempData["itemCount"] = cart.Count;
-                RedirectToAction("Index", "Home");
+                basketCount = cart.Count;
             }
+            return Json(basketCount);
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult BasketPartial()
+        {
+            List<Product> cart = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
+
+            return PartialView("_BasketPartial", cart);
         }
 
     }

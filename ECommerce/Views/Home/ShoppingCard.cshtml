@@ -3,12 +3,37 @@
     ViewData["Title"] = "ShoppingCard";
 }
 <script>
+
+    function DeleteAlert(result1) {
+        Swal.fire({
+            title: "Ürünü sepetten kaldırılsın mı?",
+            text: '',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.value) {
+                $("#tblBasketList").html(result1);
+                Swal.fire(
+                    'Ürün sepetten çıkartıldı',
+                    '',
+                    'success'
+                )
+            }
+        })
+
+    }
+
     function DeleteProduct(productId) {
 
-    var sData = {
+        var sData = {
             productId: productId
         };
         $.ajax({
+
 
             url: "/Home/DeleteToCard",
             data: sData,
@@ -16,22 +41,66 @@
             dataType: "html",
             cache: false,
             success: function (result) {
-                $("#tblBasketList").html(result);
+                DeleteAlert(result);
+                CartitemCount();
+
+
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+
+
+        });
+    }
+
+    function CartitemCount() {
+        $.post("/Home/ItemControl", function (result) {
+            $("#itemCount").text(result);
+        })
+    }
+
+
+    function PriceUpdate(id, count) {
+
+        var sData = { productId: id, count: count };
+
+        $.ajax({
+
+
+            url: "/Home/UpdatePrice",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result) {
+
+
+                $("#labelSubTotal_" + result.id).text(result.totalPrice);
+                $("#labelSubTotal_" + result.id).text(result.totalPrice.toFixed(2));
+                BasketTotalAmount();
+
             },
             error: function (jqXHR, textStatus) {
                 alert("Hata meydana geldi.");
             }
         });
     }
-    function PriceUpdate(value) {
 
-        var price = $("#labelPrc2").text().split(',').join('.');
-        
-        var total =  price  * value;
-        
+    function BasketTotalAmount() {
+        $.post("/Home/BasketPartial", function (result) {
+            $("#tblBasketList").html(result);
 
-        $("#labelSubTotal").text(total.toFixed(2));
+            //var ttlprice = 0.0;
+            //$.each(result, function (i, item) {
+
+            //    ttlprice += i.totalPrice
+            //});
+
+            //$("#labelTotalPrice").text(ttlprice.toFixed(2));
+        })
     }
+
 </script>
 <div class="container" id="tblBasketList">
     @await Html.PartialAsync("_BasketPartial", Model)
