@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ECommerce.Models;
@@ -30,8 +29,8 @@ namespace ECommerce.Controllers
         {
             var webClient = new WebClient();
 
-
-            var json = webClient.DownloadString(@"C:\Users\DetaySoft\source\repos\ECommerce\ECommerce\wwwroot\product.json");
+            var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
+            var json = webClient.DownloadString(path);
             var product = JsonConvert.DeserializeObject<List<Product>>(json);
             foreach (var item in product)
             {
@@ -41,6 +40,16 @@ namespace ECommerce.Controllers
         public IActionResult Index()
         {
             return View(Products);
+        }
+
+        public IActionResult Checkout()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Checkout(CustomerModel customer)
+        {
+            return View();
         }
 
         public IActionResult ShoppingCard()
@@ -100,13 +109,22 @@ namespace ECommerce.Controllers
             {
                 List<Product> cartList = SessionHelper.GetObjectFromJson<List<Product>>(HttpContext.Session, "cart");
                 var itemExist = cartList.FirstOrDefault(q => q.Id == productId);
-                if (cartList.Any(q => q.Id == productId))
+                if (cartList.Any(q => q.Id == productId) && count == 1)
                 {
                     return Json(1);
                 }
                 else
                 {
-                    cartList.Add(product);
+                    var isproduct = cartList.Where(q => q.Id == productId).FirstOrDefault();
+
+                    if (isproduct != null)
+                    {
+                        isproduct.BasketCount = count;
+                    }
+                    else
+                    {
+                        cartList.Add(product);
+                    }
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cartList);
             }

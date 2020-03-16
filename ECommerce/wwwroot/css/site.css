@@ -66,7 +66,7 @@ body {
 
 .footer {
     position: absolute;
-    bottom: 0;
+    bottom: -20px;
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
@@ -172,6 +172,7 @@ body {
     background-color: #000000f0;
 }
 .ikisatıryazi {
+    font-size:12px;
     overflow: hidden;
     display: -webkit-box;
     min-height:50px;
@@ -196,13 +197,6 @@ body {
     border-radius: 100%;
     color: white;
 }
-.form-card {
-    background: #f1f4f7;
-    padding: .375rem .75rem;
-    font-weight: 500;
-    color: #000000;
-    border-radius: .25rem;
-}
 .pageup {
     position: absolute;
     width: 45px;
@@ -219,3 +213,31 @@ div#tblBasketList {
     border: 1px solid #f2f2f2;
     border-radius: 10px;
 }
+.indeximg {
+    width: 80%;
+    margin: auto;
+    margin-top: 15px;
+}
+.asd {
+    padding-right: 0px !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ffc107;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #f40a0b54;
+}
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #17a2b8;
+    }

@@ -14,53 +14,84 @@
 
     function AddProduct(productId, count) {
 
-      
-        var sData = { productId: productId, count: count };
-        $.ajax({
-
-            url: "/Home/AddToCard",
-            data: sData,
-            type: "GET",
-            dataType: "json",
-            cache: false,
-            success: function (result1) {
-
-                Swal.fire({
-                    title: 'Ürün sepete eklensin mi?',
-                    text: '',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28A745',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Evet',
-                    cancelButtonText: 'İptal',
+        Swal.fire({
+            title: 'Ürün sepete eklensin mi?',
+            text: '',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28A745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet',
+            cancelButtonText: 'İptal',
 
 
-                }).then((result) => {
-                    if (result.value) {
+        }).then((result) => {
+            if (result.value) {
+
+                $('#MyModal').modal('hide');
+                $('.asd').addClass = 'asd';
+
+
+                var sData = { productId: productId, count: count };
+                $.ajax({
+
+                    url: "/Home/AddToCard",
+                    data: sData,
+                    type: "GET",
+                    dataType: "json",
+                    cache: false,
+                    success: function (result1) {
                         CartitemCount();
                         if (result1 == 1) {
-                            Swal.fire(
-                                'Bu ürün zaten sepette var',
-                                '',
-                                'warning'
-                            )
+                            Swal.mixin({
+                                icon: 'warning',
+                                confirmButtonText: 'Artır',
+                                cancelButtonText: 'İptal',
+                                showCancelButton: true,
+                            }).queue([
+                                {
+                                    title: 'Ürün sepette zaten var artırmak istiyormusunuz'
+                                },
+                            ]).then((result) => {
+                                if (result.value) {
+                                    Swal.fire({
+                                        title: 'Yeni miktar adedi giriniz.',
+                                        input: 'text',
+                                        inputAttributes: {
+                                            autocapitalize: 'off'
+                                        },
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Artır',
+                                        cancelButtonText: 'İptal',
+                                        showLoaderOnConfirm: true,
+                                        preConfirm: (newquantity) => {
+                                            //AddProduct(productId, newquantity)
+                                            AddNewCountProduct(productId, newquantity)
+
+                                        }
+                                    })
+                                }
+                            })
                         }
                         else {
-                              Swal.fire(
-                            'Sepete ekleme başarılı',
-                            '',
-                            'success'
-                        )
+                            Swal.fire(
+                                'Sepete ekleme başarılı',
+                                '',
+                                'success'
+                            )
                         }
-                      
+
+                    },
+                    error: function (jqXHR, textStatus) {
+                        alert("Hata meydana geldi.");
                     }
-                })
-            },
-            error: function (jqXHR, textStatus) {
-                alert("Hata meydana geldi.");
+                });
+
+
             }
-        });
+        })
+
+
 
     }
     function SelectProduct(productId) {
@@ -100,6 +131,43 @@
             $("#itemCount").text(result);
         })
     }
+
+
+
+
+
+
+
+
+
+    function AddNewCountProduct(productId, count) {
+
+       
+
+                var sData = { productId: productId, count: count };
+                $.ajax({
+
+                    url: "/Home/AddToCard",
+                    data: sData,
+                    type: "GET",
+                    dataType: "json",
+                    cache: false,
+                    success: function (result1) {
+                        CartitemCount();
+                         Swal.fire(
+                                'Sepete ekleme başarılı',
+                                '',
+                                'success'
+                            )
+                    },
+                    error: function (jqXHR, textStatus) {
+                        alert("Hata meydana geldi.");
+                    }
+                });
+
+
+    }
+
 </script>
 
 
@@ -115,7 +183,7 @@
                     <div class="card mb-4 shadow-sm">
 
 
-                        <img src="@img" width="100%" class="img-responsive" />
+                        <img onclick="SelectProduct(@item.Id)" src="@img" width="100%" class="img-responsive indeximg" />
                         <div class="card-body">
                             <p class="card-text font-weight-bold text-length">@item.ProductName</p>
                             <p class="card-text ikisatıryazi">@item.Description</p>

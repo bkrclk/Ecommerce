@@ -4,7 +4,9 @@
 }
 <script>
 
-    function DeleteAlert(result1) {
+    function DeleteProduct(productId) {
+
+
         Swal.fire({
             title: "Ürünü sepetten kaldırılsın mı?",
             text: '',
@@ -16,42 +18,41 @@
             cancelButtonText: 'İptal'
         }).then((result) => {
             if (result.value) {
-                $("#tblBasketList").html(result1);
-                Swal.fire(
-                    'Ürün sepetten çıkartıldı',
-                    '',
-                    'success'
-                )
+
+                var sData = { productId: productId };
+
+                $.ajax({
+
+                    url: "/Home/DeleteToCard",
+                    data: sData,
+                    type: "GET",
+                    dataType: "html",
+                    cache: false,
+                    success: function (result1) {
+
+                        CartitemCount();
+                        $("#tblBasketList").html(result1);
+                        Swal.fire(
+                            'Ürün sepetten çıkartıldı',
+                            '',
+                            'success'
+                        )
+
+
+                    },
+                    error: function (jqXHR, textStatus) {
+                        alert("Hata meydana geldi.");
+                    }
+
+
+                });
+
+
             }
         })
 
-    }
-
-    function DeleteProduct(productId) {
-
-        var sData = {
-            productId: productId
-        };
-        $.ajax({
 
 
-            url: "/Home/DeleteToCard",
-            data: sData,
-            type: "GET",
-            dataType: "html",
-            cache: false,
-            success: function (result) {
-                DeleteAlert(result);
-                CartitemCount();
-
-
-            },
-            error: function (jqXHR, textStatus) {
-                alert("Hata meydana geldi.");
-            }
-
-
-        });
     }
 
     function CartitemCount() {
