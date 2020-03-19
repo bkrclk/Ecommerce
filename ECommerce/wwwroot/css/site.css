@@ -258,4 +258,10 @@ div#tblBasketList {
 
 .userBox {
     border-right: 15px solid #f1f4f7;
+    text-align:center;
+}
+.userinfo{
+    padding:25px;
+    font-style:italic;
+    font-weight:500;
 }
