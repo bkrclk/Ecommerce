@@ -58,12 +58,18 @@ namespace ECommerce.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult ConfirmPayment(PaymentModel payment)
+        public IActionResult ConfirmPayment(PaymentModel Payment)
         {
             var cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
-            if (cart != null && !cart.Count.Equals(0))
+
+            var ConfirmPayment = new ConfirmPaymentModel();
+
+            ConfirmPayment.Product = cart;
+            ConfirmPayment.Payment = Payment;
+
+            if (ConfirmPayment != null)
             {
-                return View(cart);
+                return View(ConfirmPayment);
             }
             return RedirectToAction(nameof(ShoppingCard), "Home");
         }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ECommerce.Models.ProductModel>
+﻿@model ECommerce.Models.ConfirmPaymentModel
 @{
     @if (Model != null)
     {
@@ -47,7 +47,7 @@
 
                         <tbody>
 
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.Product)
                             {
                                 var img = item.Image;
                                 <tr>
@@ -82,7 +82,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class="text-center">
-                                    Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Sum(x => x.Price * x.BasketCount) </label>
+                                    Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Product.Sum(x => x.Price * x.BasketCount) </label>
                                 </td>
                             </tr>
                             <tr>
