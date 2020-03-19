@@ -1,13 +1,9 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
+﻿a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
 a {
     color: #0366d6;
 }
@@ -24,8 +20,6 @@ a {
     border-color: #1861ac;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 html {
     font-size: 14px;
 }
@@ -60,7 +54,6 @@ html {
 }
 
 body {
- 
     margin-bottom: 60px;
 }
 
@@ -113,13 +106,16 @@ body {
 .headertext {
     font-weight: 500;
 }
-#labelName{
-    font-size:18px;
+
+#labelName {
+    font-size: 18px;
 }
+
 #labelCode {
     font-size: 14px;
-    font-style:italic;
+    font-style: italic;
 }
+
 #labelPrice {
     font-size: 18px;
     background: #28a7452b;
@@ -131,26 +127,28 @@ body {
 
 .textsize {
     font-size: 14px;
-    padding:10px;
-    background:beige !important;
+    padding: 10px;
+    background: beige !important;
 }
 
 .form-control:focus {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0), 0 0 8px rgba(0, 0, 0, 0);
 }
+
 .nav-link {
     font-weight: 500;
-    color:black;
+    color: black;
 }
-.nav-link.active {
-    background: #ffc107 !important;
-    color:white !important;
-}
+
+    .nav-link.active {
+        background: #ffc107 !important;
+        color: white !important;
+    }
 
 
 
 #lightbox .modal-content {
-    width:auto;
+    width: auto;
     display: inline-block;
     text-align: center;
 }
@@ -171,25 +169,28 @@ body {
 #lightbox {
     background-color: #000000f0;
 }
+
 .ikisatıryazi {
-    font-size:12px;
+    font-size: 13px;
     overflow: hidden;
     display: -webkit-box;
-    min-height:50px;
-    -webkit-line-clamp: 2;
+    min-height: 50px;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
+
 .emptycard {
     border: 1px solid #f2f2f2;
     margin-top: 20px;
-    background-color:#f2f2f2;
-    padding:5px;
+    background-color: #f2f2f2;
+    padding: 5px;
 }
+
 .itemcount {
     position: relative;
     right: -55px;
     font-size: 11px;
-    border:1px solid;
+    border: 1px solid;
     padding-right: 3px;
     padding-left: 3px;
     top: -5px;
@@ -197,6 +198,7 @@ body {
     border-radius: 100%;
     color: white;
 }
+
 .pageup {
     position: absolute;
     width: 45px;
@@ -208,16 +210,19 @@ body {
 h2#swal2-title {
     font-size: 16px;
 }
+
 div#tblBasketList {
-    background: #f2f2f221;
+    background: #ffff;
     border: 1px solid #f2f2f2;
     border-radius: 10px;
 }
+
 .indeximg {
     width: 80%;
     margin: auto;
     margin-top: 15px;
 }
+
 .asd {
     padding-right: 0px !important;
 }
@@ -241,3 +246,16 @@ div#tblBasketList {
     ::-webkit-scrollbar-thumb:hover {
         background: #17a2b8;
     }
+
+.complated {
+    margin-top: 15px;
+    color: white !important;
+}
+
+.pb-3 {
+    background: #f1f4f7 !important;
+}
+
+.userBox {
+    border-right: 15px solid #f1f4f7;
+}

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ECommerce.Models.Product>
+﻿@model IEnumerable<ECommerce.Models.ProductModel>
 @{
     @if (Model != null && !Model.Count().Equals(0))
     {
@@ -30,29 +30,30 @@
                                 </div>
                             </div>
                         </td>
-                        <td data-th="Price"><label class="form-card" id="labelPrc2">@item.Price</label></td>
+                        <td data-th="Price">₺<label class="form-card" id="labelPrc2">@item.Price</label></td>
                         <td data-th="Quantity">
-                            <input type="number" class="form-control text-center" value="@item.BasketCount" min="1" max="@item.Quantity" onchange="PriceUpdate(@item.Id,this.value)">
+                            <input id="maxItemCount" type="number" class="form-control text-center" value="@item.BasketCount" min="1" max="@item.Quantity" onchange="PriceUpdate(@item.Id,this.value)">
                         </td>
-                        @{ 
-                            var totals = item.Price * item.BasketCount;
+                        @{
+                            var subTTLprc  = item.Price * item.BasketCount;
+
                         }
-                        <td data-th="Subtotal" class="text-center"><label class="form-card" id="labelSubTotal_@item.Id">@totals</label></td>
-                        <td class="actions" data-th="">
+                    <td data-th="Subtotal" class="text-center">₺<label class="form-card" id="labelSubTotal_@item.Id">@subTTLprc</label></td>
+                        <td class="actions text-right" data-th="">
                             <button class="btn btn-danger btn-sm" onclick="DeleteProduct(@item.Id)"><i class="fas fa-trash-alt"></i></button>
                         </td>
                     </tr>
-
                 }
-
 
             </tbody>
             <tfoot>
                 <tr>
                     <td><a href="/Home/Index" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                     <td colspan="2" class="hidden-xs"></td>
-                    <td class="hidden-xs text-center"><label style="font-weight:500" id="labelTotalPrice">Total:@Model.Sum(x => x.Price * x.BasketCount) </label></td>
-                    <td><a href="/Home/Checkout" class="btn btn-success">Checkout <i class="fa fa-angle-right"></i></a></td>
+                  
+                    <td class="hidden-xs text-center">Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Sum(x => x.Price * x.BasketCount) </label></td>
+
+                    <td class="text-right"><a href="/Home/Checkout" onclick="priceTTL()" class="btn btn-success">Checkout <i class="fa fa-angle-right"></i></a></td>
                 </tr>
             </tfoot>
         </table>
@@ -71,3 +72,16 @@
         </div>
     }
 }
+
+
+
+
+
+    <script>
+        function priceTTL() {
+
+        sessionStorage.totalPrice = $("#labelTotalPrice").text();
+        }
+    </script>
+
+

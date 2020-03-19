@@ -1,0 +1,158 @@
+﻿@model IEnumerable<ECommerce.Models.ProductModel>
+@{
+    @if (Model != null)
+    {
+        <div class="container" id="tblBasketList">
+            <div class="row">
+                <div class="col-md-4 userBox">
+
+
+                    <h6 style="margin-top: 15px">Customer Information</h6>
+
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-12 col-sm-6">
+                            <label>Bekir Çelik</label>
+                        </div>
+                        <div class="col-md-12 col-sm-6">
+                            <label>05375095422</label>
+                        </div>
+                        <div class="col-md-12">
+                            <label>Huzur Mahallesi Sivas 19.Sokak</label>
+                        </div>
+                        <div class="col-md-12">
+                            <label>bekircelik5858@gmail.com</label>
+                        </div>
+
+
+
+
+                    </div>
+
+                </div>
+                <div class="col-md-8">
+
+                    <table id="cart" class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:50%">Product</th>
+                                <th style="width:15%">Price</th>
+                                <th style="width:10%">Quantity</th>
+                                <th style="width:25%" class="text-center">Subtotal</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                var img = item.Image;
+                                <tr>
+                                    <td data-th="Product">
+                                        <div class="row">
+                                            <div class="col-sm-3 hidden-xs"><img src="@img" width="40" height="40" alt="..." class="img-responsive" /></div>
+                                            <div class="col-sm-9">
+                                                <div class="row">
+                                                    <span class="headertext">@item.ProductName</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td data-th="Price">₺<label class="form-card" id="labelPrc2">@item.Price</label></td>
+                                    <td data-th="Quantity">
+                                        <label>@item.BasketCount </label>
+                                    </td>
+                                    @{
+                                        var subTTLprc = item.Price * item.BasketCount;
+
+                                    }
+                                    <td data-th="Subtotal" class="text-center">₺<label class="form-card" id="labelSubTotal_@item.Id">@subTTLprc</label></td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+                        <tfoot>
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">
+                                    Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Sum(x => x.Price * x.BasketCount) </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">
+                                    <a class="btn btn-success complated" onclick="OrderComplate()">Siparişi Onayla <i class="fa fa-angle-right"></i></a>
+                                </td>
+                            </tr>
+
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    }
+
+}
+<script>
+    function OrderComplate() {
+
+        Swal.fire({
+            title: 'Sipariş onaylamak istiyor musunuz?',
+            text: '',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28A745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet',
+            cancelButtonText: 'İptal',
+
+
+        }).then((result) => {
+            if (result.value) {
+
+                $.post("/Home/OrderComplated", function (result) {
+                    if (result === 0) {
+
+                        let timerInterval
+                        Swal.fire({
+                            icon:'success',
+                            title: 'Şipariş Onaylandı',
+                            html: 'anasayfaya yönlendiriliyorsunuz.',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            onBeforeOpen: () => {
+                                Swal.showLoading()
+                                timerInterval = setInterval(() => {
+                                    const content = Swal.getContent()
+                                   
+                                }, 100)
+                            },
+                            onClose: () => {
+
+                                clearInterval(timerInterval)
+                                window.location = "/Home/Index";
+                            }
+                        }).then((result) => {
+                            if (result.dismiss === Swal.DismissReason.timer) {
+                                console.log('I was closed by the timer')
+                            }
+                        })
+
+                    }
+                })
+            }
+        })
+
+    }
+</script>

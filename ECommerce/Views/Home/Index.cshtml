@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ECommerce.Models.Product>
+﻿@model IEnumerable<ECommerce.Models.ProductModel>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -31,7 +31,6 @@
                 $('#MyModal').modal('hide');
                 $('.asd').addClass = 'asd';
 
-
                 var sData = { productId: productId, count: count };
                 $.ajax({
 
@@ -40,59 +39,41 @@
                     type: "GET",
                     dataType: "json",
                     cache: false,
-                    success: function (result1) {
+                    success: function (result) {
                         CartitemCount();
-                        if (result1 == 1) {
-                            Swal.mixin({
-                                icon: 'warning',
-                                confirmButtonText: 'Artır',
-                                cancelButtonText: 'İptal',
-                                showCancelButton: true,
-                            }).queue([
-                                {
-                                    title: 'Ürün sepette zaten var artırmak istiyormusunuz'
-                                },
-                            ]).then((result) => {
-                                if (result.value) {
-                                    Swal.fire({
-                                        title: 'Yeni miktar adedi giriniz.',
-                                        input: 'text',
-                                        inputAttributes: {
-                                            autocapitalize: 'off'
-                                        },
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Artır',
-                                        cancelButtonText: 'İptal',
-                                        showLoaderOnConfirm: true,
-                                        preConfirm: (newquantity) => {
-                                            //AddProduct(productId, newquantity)
-                                            AddNewCountProduct(productId, newquantity)
-
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                        else {
+                        if (result.state === 1) {
                             Swal.fire(
                                 'Sepete ekleme başarılı',
                                 '',
                                 'success'
                             )
-                        }
+                        } else if (result.state === 2) {
+                            Swal.fire({
+                                title: 'Ürün sepette zaten var sepeti güncellemek için yeni miktar giriniz.',
+                                input: 'number',
+                                inputAttributes: {
+                                    autocapitalize: 'off'
+                                },
+                                showCancelButton: true,
+                                confirmButtonText: 'Güncelle',
+                                cancelButtonText: 'İptal',
+                                showLoaderOnConfirm: true,
+                                preConfirm: (newCount) => {
 
+                                    UpdateProduct(productId, newCount)
+                                }
+                            });
+                        }
+                        else {
+                            Swal.fire(result.message, "", "error");
+                        }
                     },
                     error: function (jqXHR, textStatus) {
                         alert("Hata meydana geldi.");
                     }
                 });
-
-
             }
         })
-
-
-
     }
     function SelectProduct(productId) {
         var sData = {
@@ -132,38 +113,38 @@
         })
     }
 
+    function UpdateProduct(productId, count) {
 
+        var sData = { productId: productId, count: count };
+        $.ajax({
 
-
-
-
-
-
-
-    function AddNewCountProduct(productId, count) {
-
-       
-
-                var sData = { productId: productId, count: count };
-                $.ajax({
-
-                    url: "/Home/AddToCard",
-                    data: sData,
-                    type: "GET",
-                    dataType: "json",
-                    cache: false,
-                    success: function (result1) {
-                        CartitemCount();
-                         Swal.fire(
-                                'Sepete ekleme başarılı',
-                                '',
-                                'success'
-                            )
-                    },
-                    error: function (jqXHR, textStatus) {
-                        alert("Hata meydana geldi.");
-                    }
-                });
+            url: "/Home/AddToCard",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result1) {
+                var a = result1;
+                if (count <= result1.product.quantity) {
+                    CartitemCount();
+                    Swal.fire(
+                        'Güncelleme başarılı',
+                        '',
+                        'success'
+                    )
+                }
+                else {
+                    Swal.fire(
+                        'Yetersiz stok! Son ' + result1.product.quantity + ' adet ürün kaldı',
+                        '',
+                        'error'
+                    )
+                }
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
 
 
     }
@@ -191,11 +172,11 @@
                                 <div class="btn-group">
                                     <button id="viewBtn" type="button" class="btn btn-sm btn-secondary" onclick="SelectProduct(@item.Id)">Detail</button>
 
-                                    <button type="button" class="btn btn-sm btn-success" onclick="AddProduct(@item.Id)">Add to Card</button>
+                                    <button type="button" class="btn btn-sm btn-success" onclick="AddProduct(@item.Id,1)">Add to Card</button>
                                 </div>
                                 <small class="instock btn btn-warning"><i class="fas fa-cubes"></i> 100</small>
                                 <img class="priceimg" src="~/img/price.jpg" />
-                                <small class="price">$@item.Price</small>
+                                <small class="price">₺@item.Price</small>
                             </div>
                         </div>
                     </div>

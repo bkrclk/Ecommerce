@@ -1,11 +1,10 @@
-﻿@model IEnumerable<ECommerce.Models.Product>
+﻿@model IEnumerable<ECommerce.Models.ProductModel>
 @{
     ViewData["Title"] = "ShoppingCard";
 }
 <script>
 
     function DeleteProduct(productId) {
-
 
         Swal.fire({
             title: "Ürünü sepetten kaldırılsın mı?",
@@ -37,22 +36,13 @@
                             '',
                             'success'
                         )
-
-
                     },
                     error: function (jqXHR, textStatus) {
                         alert("Hata meydana geldi.");
                     }
-
-
                 });
-
-
             }
         })
-
-
-
     }
 
     function CartitemCount() {
@@ -61,13 +51,11 @@
         })
     }
 
-
     function PriceUpdate(id, count) {
 
         var sData = { productId: id, count: count };
 
         $.ajax({
-
 
             url: "/Home/UpdatePrice",
             data: sData,
@@ -76,30 +64,51 @@
             cache: false,
             success: function (result) {
 
-
-                $("#labelSubTotal_" + result.id).text(result.totalPrice);
-                $("#labelSubTotal_" + result.id).text(result.totalPrice.toFixed(2));
                 BasketTotalAmount();
+                UpdateProduct(id, count)
+               
 
             },
             error: function (jqXHR, textStatus) {
                 alert("Hata meydana geldi.");
             }
         });
+
     }
 
     function BasketTotalAmount() {
         $.post("/Home/BasketPartial", function (result) {
             $("#tblBasketList").html(result);
-
-            //var ttlprice = 0.0;
-            //$.each(result, function (i, item) {
-
-            //    ttlprice += i.totalPrice
-            //});
-
-            //$("#labelTotalPrice").text(ttlprice.toFixed(2));
         })
+    }
+
+   function UpdateProduct(productId, count) {
+
+        var sData = { productId: productId, count: count };
+        $.ajax({
+
+            url: "/Home/AddToCard",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result1) {
+                var a = result1;
+                if (count <= result1.product.quantity) {
+                    CartitemCount();
+                }
+                else {
+                    Swal.fire(
+                        'Yetersiz stok! Son ' + result1.product.quantity + ' adet ürün kaldı',
+                        '',
+                        'error'
+                    )
+                }
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
     }
 
 </script>

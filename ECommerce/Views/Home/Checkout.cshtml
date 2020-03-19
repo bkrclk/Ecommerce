@@ -1,205 +1,86 @@
-﻿@model CustomerModel;
+﻿@model PaymentModel;
 @{
     ViewData["Title"] = "Checkout";
 }
-<style>
+
+<link href="~/css/checkout.css" rel="stylesheet" />
+
+<div class="container" style="padding-top:15px">
+    <form asp-action="ConfirmPayment" method="post" asp-controller="Home">
+        <div class="row"  style="margin-top:15px">
+            <div class="col-md-8 col-sm-12 solcheck">
+                <h4 style="margin-top: 20px" class="text-center">Customer Information</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="formcheck">Name</label>
+                        <input class="form-control" type="text" placeholder="Name" asp-for="Name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="formcheck">Surname</label>
+                        <input class="form-control" type="text" placeholder="Surname" asp-for="Surname">
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <label class="formcheck">E-mail</label>
+                        <input class="form-control" type="email" placeholder="E-mail" asp-for="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="formcheck">Phone</label>
+                        <input class="form-control" type="text" maxlength="11" placeholder="Phone" asp-for="Phone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
 
 
-.card0 {
-    margin: 50px 12px 40px 12px;
-    border: 0
-}
+                    <div class="col-md-12">
+                        <label class="formcheck">Your adress</label>
+                        <textarea class="form-control" type="text" cols="5" style="resize: none;" placeholder="Please valid adress" asp-for="Adress"></textarea>
+                        <span asp-validation-for="Adress" class="text-danger"></span>
+                    </div>
+                </div>
 
-    .card1 {
-        margin: 0;
-        padding: 0;
-        object-fit: contain;
-        height: 100%;
-        background-color: #fba22ac4;
-        position: relative;
-        border-top-left-radius: 10px !important;
-        border-bottom-left-radius: 10px !important
-    }
-
-#sub-heading1 {
-    font-size: 55px
-}
-
-#sub-heading2 {
-    font-size: 20px;
-    color: grey
-}
-
-#heading {
-    color: #000000;
-    padding-bottom: 20px
-}
-
-.placeicon {
-    font-family: fontawesome !important
-}
-
-    .card2 {
-        background-color: #4abfe5ab;
-        padding: 25px;
-        padding-left: 35px;
-        padding-right: 35px;
-        margin: 0;
-        border: 1px solid #f1f4f7 !important;
-        height: 100%;
-        border-top-right-radius: 10px !important;
-        border-bottom-right-radius: 10px !important
-    }
-
-.text-dark {
-    color: grey !important
-}
-
-.form-card {
-    height: 100%;
-    position: relative
-}
-
-    .form-card input,
-    .form-card textarea {
-        padding: 5px 1px 10px 5px;
-        margin-bottom: 25px;
-        width: 100%;
-        border:1px inset;
-        box-sizing: border-box;
-        font-weight: 400;
-        letter-spacing: 1px;
-    }
-
-        .form-card input:focus,
-        .form-card textarea:focus {
-            -moz-box-shadow: none !important;
-            -webkit-box-shadow: none !important;
-            box-shadow: none !important;
-            border: none;
-            font-weight: 500;
-            border-bottom: 1.5px solid skyblue;
-            padding-bottom: 9.5px;
-            outline-width: 0
-        }
-
-.form-card .btn-success {
-    color: #ffffff !important;
-    margin-bottom: 25px !important;
-    font-weight: 300;
-    width: 100%;
-    border-radius: 4px;
-    letter-spacing: 2px;
-    font-family: Trebuchet MS !important
-}
-
-.fit-image {
-    width: 100%;
-    object-fit: cover
-}
-
-.radio-group {
-    position: relative;
-    margin-bottom: 25px
-}
-
-    .radio {
-        width: 180px;
-        height: 60px;
-        display: inline-block;
-        border-radius: 0;
-        background: #B2EBF2;
-        box-sizing: border-box;
-        border-top: 3px solid #E8F5E9;
-        cursor: pointer;
-        margin: 8px 0px 8px 0px;
-        transition: 0.3s
-    }
-
-.radio:hover {
-    border-top: 3px #B2EBF2 solid;
-    transition: 0.3s
-}
-
-.radio.selected {
-    border-top: 3px solid #0091EA;
-    transition: 0.3s
-}
-
-</style>
-<div class="container">
-    <form asp-action="Checkout" asp-controller="Home">
-        <div class="row justify-content-center">
-            <div class="col-12 col-sm-10 col-md-12 col-lg-11 col-xl-10">
-                <div class="card card0">
-                    <div class="row">
-                        <div class="col-md-6 d-block p-0 box">
-                            <div class="card rounded-0 border-0 card1 pr-xl-4 pr-lg-3">
-                                <div class="row justify-content-center">
-                                    <div class="col-11">
-                                        <h4 class="text-center mt-4 mb-4" id="heading0">Customer details</h4>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center">
-                                    <div class="col-5 fit-image"> <img src="https://cdn2.iconfinder.com/data/icons/artificial-intelligence-ai-color/64/behavior-consumer-analysis-shopping-buyer-customer-512.png" height="200" width="200"> </div>
-                                </div>
-
-                                <div class="form-card p-4 pl-5">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="col-12"> <label class="gift">To</label> </div>
-                                                <div class="col-12"> <input class="gift-input" type="text"  placeholder="Name" asp-for="Name"> </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="col-12"> <label class="gift">From</label> </div>
-                                                <div class="col-12"> <input class="gift-input" type="text"  placeholder="Surname" asp-for="Surname"> </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12"> <label class="gift">Recipient email</label><br> <input class="gift-input" type="email" placeholder="E-mail" asp-for="Email"> </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12"> <label class="gift">Adress</label><br> <textarea class="gift-input" type="text"  cols="3" style="resize: none;" placeholder="Your adress" asp-for="Adress"></textarea> </div>
-                                    </div>
-                                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="card rounded-0 border-0 card2">
+                    <div class="form-card">
+                        <h4 id="heading" class="text-center">Payment Informations</h4>
+                        <div class="radio-group text-center">
+                            <div class='radio selected' data-value="credit"><img src="https://4.bp.blogspot.com/-g-2d3NRNXlU/VlPxBHbkhlI/AAAAAAAAomM/Am_kcVvyLKY/s1600/MasterCard_Logo.svg.png" width="120" height="60"></div>
+                            <div class='radio' data-value="paypal"><img src="https://d31dn7nfpuwjnm.cloudfront.net/images/valoraciones/0033/7299/Como_retirar_dinero_de_PayPal_en_Colombia.png?1555502328" width="120" height="60"></div> <br>
+                        </div>
+                        <h5 id="credit" class="mb-3">Credit card Informations</h5>
+                        <input type="text" placeholder="Card Name" asp-for="CardName">
+                        <span asp-validation-for="CardName" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="text" id="creditNumber" placeholder="0000 0000 0000 0000" maxlength="16" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" asp-for="CardNumber">
+                                <span asp-validation-for="CardNumber" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-12 p-0 box">
-                            <div class="card rounded-0 border-0 card2">
-                                <div class="form-card">
-                                    <h4 id="heading" class="text-center">Payment Information</h4>
-                                    <div class="radio-group text-center">
-                                        <div class='radio selected' data-value="credit"><img src="https://i.imgur.com/28akQFX.jpg" width="180" height="60"></div>
-                                        <div class='radio' data-value="paypal"><img src="https://i.imgur.com/5QFsx7K.jpg" width="180" height="60"></div> <br>
-                                    </div>
-                                    <h5 id="credit" class="mb-3">Credit card Informatons</h5> <input type="text" placeholder="Card Name" asp-for="CardName">
-                                    <div class="row">
-                                        <div class="col-12"> <input type="text"  id="cr_no" placeholder="0000 0000 0000 0000" minlength="19" maxlength="19" asp-for="CardNumber"> </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-9 col-md-7"> <input type="text" id="exp" placeholder="MM/YY" minlength="5" maxlength="5" asp-for="CardExpirationDate"> </div>
-                                        <div class="col-3 col-md-5"> <input type="password"  placeholder="&#9679;&#9679;&#9679;" class="placeicon" minlength="3" maxlength="3" asp-for="CardCVV"> </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12">
-                                            <div class="custom-control custom-checkbox custom-control-inline"> <input id="chk1" type="checkbox" name="chk" class="custom-control-input"> <label for="chk1" class="custom-control-label">Business account</label> </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="row justify-content-center">
-                                            <div class="col-12">
-                                                <h4 id="total" class="text-center">Total: ₺69.94 + <span class="text-dark">KDV</span></h4>
-                                            </div>
-                                        </div>
-                                        <div style="margin-top:20px" class="row justify-content-center">
-                                            <div class="col-md-8"> <input type="submit" value="PURCHASE CARD" class="btn btn-success"> </div>
-                                        </div>
-                                    </div>
+                        <div class="row form-group">
+                            <div class="col-9 col-md-7">
+                                <input type="text" id="exp" placeholder="MM/YY" minlength="5" maxlength="5" asp-for="CardExpirationDate">
+                                <span asp-validation-for="CardExpirationDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-3 col-md-5">
+                                <input type="password" placeholder="&#9679;&#9679;&#9679;" class="placeicon" minlength="3" maxlength="3" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" asp-for="CardCVV">
+                                <span asp-validation-for="CardCVV" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row justify-content-center">
+                                <div class="col-12">
+                                    <h4 id="totalPRC" class="text-center"> <span class="text-dark"> + KDV</span></h4>
                                 </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8"> <input type="submit" value="PURCHASE CARD" class="btn btn-success"> </div>
                             </div>
                         </div>
                     </div>
@@ -210,4 +91,9 @@
 </div>
 
 
-
+@section Scripts {
+    <script>
+        $("#totalPRC").text("Total: ₺" + sessionStorage.totalPrice);
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
