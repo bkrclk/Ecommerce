@@ -9,6 +9,8 @@ using System.Net;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using ECommerce.Helpers;
+using ECommerce.Models.Validations;
+using FluentValidation.Results;
 
 namespace ECommerce.Controllers
 {
@@ -59,16 +61,30 @@ namespace ECommerce.Controllers
         [HttpPost]
         public IActionResult ConfirmPayment(PaymentModel Payment)
         {
-            var cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
 
-            var ConfirmPayment = new ConfirmPaymentModel();
-
-            ConfirmPayment.Product = cart;
-            ConfirmPayment.Payment = Payment;
-
-            if (ConfirmPayment != null)
+            PaymentValidation paymentValidation = new PaymentValidation();
+            ValidationResult result = paymentValidation.Validate(Payment);
+            if (result.IsValid)
             {
-                return View(ConfirmPayment);
+                var cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
+
+                var ConfirmPayment = new ConfirmPaymentModel();
+
+                ConfirmPayment.Product = cart;
+                ConfirmPayment.Payment = Payment;
+
+                if (ConfirmPayment != null)
+                {
+                    return View(ConfirmPayment);
+                }
+                
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
             }
             return RedirectToAction(nameof(ShoppingCard), "Home");
         }
