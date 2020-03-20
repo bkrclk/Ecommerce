@@ -16,28 +16,24 @@ namespace ECommerce.Controllers
 {
     public class HomeController : Controller
     {
+        #region Properties
         private readonly ILogger<HomeController> _logger;
 
         public static List<ProductModel> Products = new List<ProductModel>();
 
+        #endregion
 
+        #region Constructors
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             ProductsBind();
-
         }
-        public void ProductsBind()
-        {
-            if (Products == null || Products.Count == 0)
-            {
-                var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
-                var webClient = new WebClient();
-                var json = webClient.DownloadString(path);
-                Products = JsonConvert.DeserializeObject<List<ProductModel>>(json);
-            }
+        #endregion
 
-        }
+        #region Method
+
+        #region ViewMethod
         public IActionResult Index()
         {
             return View(Products);
@@ -52,7 +48,6 @@ namespace ECommerce.Controllers
             }
             return View();
         }
-
 
         public IActionResult ConfirmPayment()
         {
@@ -77,7 +72,7 @@ namespace ECommerce.Controllers
                 {
                     return View(ConfirmPayment);
                 }
-                
+
             }
             else
             {
@@ -98,6 +93,21 @@ namespace ECommerce.Controllers
             }
 
             return View();
+
+        }
+
+        #endregion
+
+        #region FunctionMethod
+        public void ProductsBind()
+        {
+            if (Products == null || Products.Count == 0)
+            {
+                var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
+                var webClient = new WebClient();
+                var json = webClient.DownloadString(path);
+                Products = JsonConvert.DeserializeObject<List<ProductModel>>(json);
+            }
 
         }
 
@@ -124,9 +134,16 @@ namespace ECommerce.Controllers
             return PartialView("_BasketPartial", cardlist);
         }
 
+        public IActionResult BasketPartial()
+        {
+            List<ProductModel> cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
+
+            return PartialView("_BasketPartial", cart);
+        }
+
         public IActionResult AddToCard(int productId, int count)
         {
-           
+
             var returnMessage = new ReturnMessage();
             var product = Products.Where(q => q.Id == productId).FirstOrDefault();
             if (product == null)
@@ -216,34 +233,36 @@ namespace ECommerce.Controllers
             var isSession = 1;
             var basketList = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
 
-            foreach (var item1 in basketList)
-            {
-                foreach (var item2 in Products)
-                {
-                    if (item1.Id == item2.Id)
-                        item2.Quantity = item2.Quantity - item1.BasketCount;
-                }
+            var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
+            var webClient = new WebClient();
+            var json = webClient.DownloadString(path);
+            Products = JsonConvert.DeserializeObject<List<ProductModel>>(json);
 
+            foreach (var item in basketList)
+            {
+                var updateProducts = Products.Find(q => q.Id == item.Id);
+                updateProducts.Quantity = updateProducts.Quantity - item.BasketCount;
             }
+            var output = JsonConvert.SerializeObject(Products, Formatting.Indented);
+
+            System.IO.File.WriteAllText(path, output);
 
             HttpContext.Session.Clear();
             isSession = 0;
 
             return Json(isSession);
         }
+        #endregion
 
+        #region ErrorMethod
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        #endregion
 
-        public IActionResult BasketPartial()
-        {
-            List<ProductModel> cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
-
-            return PartialView("_BasketPartial", cart);
-        }
+        #endregion
 
     }
 }
