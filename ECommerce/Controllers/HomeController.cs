@@ -16,26 +16,25 @@ namespace ECommerce.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public List<ProductModel> Products = new List<ProductModel>();
+        public static List<ProductModel> Products = new List<ProductModel>();
 
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            Bind();
+            ProductsBind();
 
         }
-        public void Bind()
+        public void ProductsBind()
         {
-            var webClient = new WebClient();
-
-            var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
-            var json = webClient.DownloadString(path);
-            var product = JsonConvert.DeserializeObject<List<ProductModel>>(json);
-            foreach (var item in product)
+            if (Products == null || Products.Count == 0)
             {
-                Products.Add(item);
+                var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
+                var webClient = new WebClient();
+                var json = webClient.DownloadString(path);
+                Products = JsonConvert.DeserializeObject<List<ProductModel>>(json);
             }
+
         }
         public IActionResult Index()
         {
@@ -55,7 +54,7 @@ namespace ECommerce.Controllers
 
         public IActionResult ConfirmPayment()
         {
-            return View();
+            return RedirectToAction(nameof(ShoppingCard), "Home");
         }
         [HttpPost]
         public IActionResult ConfirmPayment(PaymentModel Payment)
@@ -111,6 +110,7 @@ namespace ECommerce.Controllers
 
         public IActionResult AddToCard(int productId, int count)
         {
+           
             var returnMessage = new ReturnMessage();
             var product = Products.Where(q => q.Id == productId).FirstOrDefault();
             if (product == null)
@@ -124,10 +124,17 @@ namespace ECommerce.Controllers
             {
                 cartList = new List<ProductModel>();
             }
-
             if (!cartList.Any(q => q.Id == productId))
             {
-                product.BasketCount = count;
+                if (product.Quantity >= count)
+                {
+                    product.BasketCount = count;
+                }
+                else
+                {
+                    returnMessage.setMessageFirst("Yetersiz Stok!", product.BasketCount, product);
+                    return Json(returnMessage);
+                }
                 cartList.Add(product);
                 returnMessage.SetSuccessMessage("Ürün başarıyla eklendi.", product);
             }
@@ -136,7 +143,11 @@ namespace ECommerce.Controllers
                 var cartItem = cartList.FirstOrDefault(q => q.Id == productId);
                 if (cartItem.BasketCount > 0)
                 {
-                    cartItem.BasketCount = count;
+                    if (cartItem.Quantity >= count)
+                    {
+                        cartItem.BasketCount = count;
+                    }
+
                     returnMessage.setMessage("Ürün sepette mevcut, artırmak ister misiniz?", cartItem.BasketCount, cartItem);
                     SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cartList);
                     return Json(returnMessage);
@@ -185,13 +196,23 @@ namespace ECommerce.Controllers
 
         public IActionResult OrderComplated()
         {
-            HttpContext.Session.Clear();
+
             var isSession = 1;
-            var cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
-            if (cart == null || cart.Count == 0)
+            var basketList = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
+
+            foreach (var item1 in basketList)
             {
-                isSession = 0;
+                foreach (var item2 in Products)
+                {
+                    if (item1.Id == item2.Id)
+                        item2.Quantity = item2.Quantity - item1.BasketCount;
+                }
+
             }
+
+            HttpContext.Session.Clear();
+            isSession = 0;
+
             return Json(isSession);
         }
 

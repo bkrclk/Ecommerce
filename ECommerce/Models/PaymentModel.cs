@@ -27,6 +27,7 @@ namespace ECommerce.Models
         ErrorMessage = "Not a valid email")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Please input valid Phone.")]
         [RegularExpression(@"^\(?([0]{1}[5]{1}[3-5]{1}[0-9]{1})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", 
         ErrorMessage = "Telefon 0553-XXX-XXXX && 553XXXXXXX şeklinde olmalıdır.")]
         public string Phone { get; set; }

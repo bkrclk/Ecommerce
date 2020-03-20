@@ -30,15 +30,15 @@
                                 </div>
                             </div>
                         </td>
-                        <td data-th="Price">₺<label class="form-card" id="labelPrc2">@item.Price</label></td>
+                        <td data-th="Price">₺<label class="form-card" id="labelPrc2_@item.Id">@item.Price</label></td>
                         <td data-th="Quantity">
-                            <input id="maxItemCount" type="number" class="form-control text-center" value="@item.BasketCount" min="1" max="@item.Quantity" onchange="PriceUpdate(@item.Id,this.value)">
+                            <input id="maxItemCount_@item.Id" type="number" class="form-control text-center" value="@item.BasketCount" min="1" max="@item.Quantity" onchange="PriceUpdate(@item.Id,this.value)">
                         </td>
                         @{
-                            var subTTLprc  = item.Price * item.BasketCount;
+                            var subTTLprc = item.Price * item.BasketCount;
 
                         }
-                    <td data-th="Subtotal" class="text-center">₺<label class="form-card" id="labelSubTotal_@item.Id">@subTTLprc</label></td>
+                        <td data-th="Subtotal" class="text-center">₺<label class="form-card" id="labelSubTotal_@item.Id">@subTTLprc</label></td>
                         <td class="actions text-right" data-th="">
                             <button class="btn btn-danger btn-sm" onclick="DeleteProduct(@item.Id)"><i class="fas fa-trash-alt"></i></button>
                         </td>
@@ -50,7 +50,7 @@
                 <tr>
                     <td><a href="/Home/Index" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                     <td colspan="2" class="hidden-xs"></td>
-                  
+
                     <td class="hidden-xs text-center">Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Sum(x => x.Price * x.BasketCount) </label></td>
 
                     <td class="text-right"><a href="/Home/Checkout" onclick="priceTTL()" class="btn btn-success">Checkout <i class="fa fa-angle-right"></i></a></td>
@@ -61,7 +61,7 @@
     else
     {
         <div class="row emptycard">
-            <div class="col-md-3">
+            <div class="col-md-3 text-center">
                 <img src="~/img/shopping-cart.png" />
             </div>
             <div class="col-md-9" style="margin-top:15px">
@@ -69,19 +69,14 @@
                 Alışverişe devam etmek için <a href="/Home/Index">buraya</a> Tıklayınız.
             </div>
 
-        </div>
+        </div> 
     }
 }
-
-
-
-
-
-    <script>
-        function priceTTL() {
+<script>
+    function priceTTL() {
 
         sessionStorage.totalPrice = $("#labelTotalPrice").text();
-        }
-    </script>
+    }
+</script>
 
 

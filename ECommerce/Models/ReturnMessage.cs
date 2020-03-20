@@ -8,11 +8,8 @@ namespace ECommerce.Models
     public class ReturnMessage
     {
         public string Message { get; set; }
-
         public int State { get; set; }
-
         public int Count { get; set; }
-
         public ProductModel Product { get; set; }
 
         public ReturnMessage()
@@ -37,6 +34,14 @@ namespace ECommerce.Models
         public void SetSuccessMessage(string message, ProductModel product)
         {
             State = 1;
+            Message = message;
+            Product = product;
+        }
+
+        public void setMessageFirst(string message, int count, ProductModel product)
+        {
+            State = 3;
+            Count = count;
             Message = message;
             Product = product;
         }

@@ -24,75 +24,73 @@
 
                         </div>
                     </div>
-                </div>
-                <div class="col-md-8">
-
-                    <table id="cart" class="table table-hover table-condensed">
-                        <thead>
-                            <tr>
-                                <th style="width:50%">Product</th>
-                                <th style="width:15%">Price</th>
-                                <th style="width:10%">Quantity</th>
-                                <th style="width:25%" class="text-center">Subtotal</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @foreach (var item in Model.Product)
-                            {
-                                var img = item.Image;
-                                <tr>
-                                    <td data-th="Product">
-                                        <div class="row">
-                                            <div class="col-sm-3 hidden-xs"><img src="@img" width="40" height="40" alt="..." class="img-responsive" /></div>
-                                            <div class="col-sm-9">
-                                                <div class="row">
-                                                    <span class="headertext">@item.ProductName</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td data-th="Price">₺<label class="form-card" id="labelPrc2">@item.Price</label></td>
-                                    <td data-th="Quantity">
-                                        <label>@item.BasketCount </label>
-                                    </td>
-                                    @{
-                                        var subTTLprc = item.Price * item.BasketCount;
-
-                                    }
-                                    <td data-th="Subtotal" class="text-center">₺<label class="form-card" id="labelSubTotal_@item.Id">@subTTLprc</label></td>
-
-                                </tr>
-                            }
-
-                        </tbody>
-                        <tfoot>
-
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="text-center">
-                                    Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Product.Sum(x => x.Price * x.BasketCount) </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="text-center">
-                                    <a class="btn btn-success complated" onclick="OrderComplate()">Siparişi Onayla <i class="fa fa-angle-right"></i></a>
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-                </div>
 
             </div>
-        </div>
+            <div class="col-md-8">
 
+                <table id="cart" class="table table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th style="width:50%">Product</th>
+                            <th style="width:15%">Price</th>
+                            <th style="width:10%">Quantity</th>
+                            <th style="width:25%" class="text-center">Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Product)
+                        {
+                            var img = item.Image;
+                            <tr>
+                                <td data-th="Product">
+                                    <div class="row">
+                                        <div class="col-sm-3 hidden-xs"><img src="@img" width="40" height="40" alt="..." class="img-responsive" /></div>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <span class="headertext">@item.ProductName</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-th="Price">₺<label class="form-card" id="labelPrc2">@item.Price</label></td>
+                                <td data-th="Quantity">
+                                    <label>@item.BasketCount </label>
+                                </td>
+                                @{
+                                    var subTTLprc = item.Price * item.BasketCount;
+
+                                }
+                                <td data-th="Subtotal" class="text-center">₺<label class="form-card" id="labelSubTotal_@item.Id">@subTTLprc</label></td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-center">
+                                Total: ₺<label style="font-weight:500" id="labelTotalPrice">@Model.Product.Sum(x => x.Price * x.BasketCount) </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-center">
+                                <a class="btn btn-success complated" onclick="OrderComplate()">Siparişi Onayla <i class="fa fa-angle-right"></i></a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+        </div>
     }
 
 }
@@ -109,7 +107,6 @@
             confirmButtonText: 'Evet',
             cancelButtonText: 'İptal',
 
-
         }).then((result) => {
             if (result.value) {
 
@@ -119,7 +116,7 @@
                         let timerInterval
                         Swal.fire({
                             icon: 'success',
-                            title: 'Şipariş Onaylandı',
+                            title: 'Şipariş Onaylandı..',
                             html: 'anasayfaya yönlendiriliyorsunuz.',
                             timer: 3000,
                             timerProgressBar: true,

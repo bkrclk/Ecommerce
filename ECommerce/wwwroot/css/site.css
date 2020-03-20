@@ -181,9 +181,7 @@ body {
 
 .emptycard {
     border: 1px solid #f2f2f2;
-    margin-top: 20px;
-    background-color: #f2f2f2;
-    padding: 5px;
+    padding: 30px;
 }
 
 .itemcount {
@@ -214,7 +212,6 @@ h2#swal2-title {
 div#tblBasketList {
     background: #ffff;
     border: 1px solid #f2f2f2;
-    border-radius: 10px;
 }
 
 .indeximg {

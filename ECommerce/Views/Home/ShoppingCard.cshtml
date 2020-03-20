@@ -52,28 +52,36 @@
     }
 
     function PriceUpdate(id, count) {
+        if (count != 0) {
+            var sData = { productId: id, count: count };
 
-        var sData = { productId: id, count: count };
+            $.ajax({
 
-        $.ajax({
+                url: "/Home/UpdatePrice",
+                data: sData,
+                type: "GET",
+                dataType: "json",
+                cache: false,
+                success: function (result) {
 
-            url: "/Home/UpdatePrice",
-            data: sData,
-            type: "GET",
-            dataType: "json",
-            cache: false,
-            success: function (result) {
-
-                BasketTotalAmount();
-                UpdateProduct(id, count)
-               
-
-            },
-            error: function (jqXHR, textStatus) {
-                alert("Hata meydana geldi.");
-            }
-        });
-
+                    BasketTotalAmount();
+                    UpdateProduct(id, count)
+                },
+                error: function (jqXHR, textStatus) {
+                    alert("Hata meydana geldi.");
+                }
+            });
+        }
+        else {
+            Swal.fire(
+                'Miktar alanı 0 olamaz!',
+                '',
+                'error'
+            )
+            var a = parseFloat($("#labelPrc2_" + id).text());
+            var b = parseFloat($("#labelSubTotal_" + id).text());
+            $("#maxItemCount_" + id).val(parseInt(b / a));
+        }
     }
 
     function BasketTotalAmount() {
@@ -82,7 +90,7 @@
         })
     }
 
-   function UpdateProduct(productId, count) {
+    function UpdateProduct(productId, count) {
 
         var sData = { productId: productId, count: count };
         $.ajax({
@@ -93,7 +101,6 @@
             dataType: "json",
             cache: false,
             success: function (result1) {
-                var a = result1;
                 if (count <= result1.product.quantity) {
                     CartitemCount();
                 }

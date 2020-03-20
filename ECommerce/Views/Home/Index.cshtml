@@ -4,14 +4,33 @@
 }
 
 <script>
-
     function AddProductView() {
 
         var productId = $("#labelId").text();
         var addViewinputCount = $("#addViewinputCount").val();
-        AddProduct(productId, addViewinputCount);
-    }
 
+        if (addViewinputCount != 0) {
+            AddProduct(productId, addViewinputCount);
+        }
+        else {
+            Swal.fire({
+                title: 'Miktar "0" olamaz! artırmak istiyor musunuz?.',
+                input: 'number',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Artır',
+                cancelButtonText: 'İptal',
+                showLoaderOnConfirm: true,
+                preConfirm: (newCount) => {
+
+                    AddProduct(productId, newCount);
+                    $("#addViewinputCount").val(newCount);
+                }
+            });
+        }
+    }
     function AddProduct(productId, count) {
 
         Swal.fire({
@@ -23,7 +42,6 @@
             cancelButtonColor: '#d33',
             confirmButtonText: 'Evet',
             cancelButtonText: 'İptal',
-
 
         }).then((result) => {
             if (result.value) {
@@ -60,9 +78,12 @@
                                 showLoaderOnConfirm: true,
                                 preConfirm: (newCount) => {
 
-                                    UpdateProduct(productId, newCount)
+                                    UpdateProduct(productId, newCount);
                                 }
                             });
+                        }
+                        else if (result.state === 3) {
+                            UpdateProduct(productId, count);
                         }
                         else {
                             Swal.fire(result.message, "", "error");
@@ -112,7 +133,6 @@
             $("#itemCount").text(result);
         })
     }
-
     function UpdateProduct(productId, count) {
 
         var sData = { productId: productId, count: count };
@@ -124,7 +144,6 @@
             dataType: "json",
             cache: false,
             success: function (result1) {
-                var a = result1;
                 if (count <= result1.product.quantity) {
                     CartitemCount();
                     Swal.fire(
@@ -145,12 +164,8 @@
                 alert("Hata meydana geldi.");
             }
         });
-
-
     }
-
 </script>
-
 
 <div class="album py-5 bg-light">
     <div class="container">
@@ -174,7 +189,7 @@
 
                                     <button type="button" class="btn btn-sm btn-success" onclick="AddProduct(@item.Id,1)">Add to Card</button>
                                 </div>
-                                <small class="instock btn btn-warning"><i class="fas fa-cubes"></i> 100</small>
+                                <small class="instock btn btn-warning"><i class="fas fa-cubes"></i> @item.Quantity</small>
                                 <img class="priceimg" src="~/img/price.jpg" />
                                 <small class="price">₺@item.Price</small>
                             </div>
@@ -182,8 +197,6 @@
                     </div>
                 </div>
             }
-
-
         </div>
     </div>
 </div>
@@ -219,7 +232,7 @@
 
 
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-3 col-sm-3">
                                 <input id="addViewinputCount" type="number" class="form-control text-center " value="1">
                             </div>
                             <div class="col-md-4" style="margin-top:4px;">
