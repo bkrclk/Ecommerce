@@ -14,19 +14,28 @@
         }
         else {
             Swal.fire({
-                title: 'Miktar "0" olamaz! artırmak istiyor musunuz?.',
+                title: 'Lütfen geçerli miktar sayısı giriniz!',
                 input: 'number',
                 inputAttributes: {
                     autocapitalize: 'off'
                 },
                 showCancelButton: true,
-                confirmButtonText: 'Artır',
+                confirmButtonText: 'Sepete Ekle',
                 cancelButtonText: 'İptal',
                 showLoaderOnConfirm: true,
                 preConfirm: (newCount) => {
-
-                    AddProduct(productId, newCount);
+                    if (newCount <= 0 || newCount=="") {
+                         Swal.fire(
+                        'Geçerli bir değer giriniz!',
+                        '',
+                        'warning'
+                    )
+                    }
+                    else {
+                        AddProduct(productId, newCount);
                     $("#addViewinputCount").val(newCount);
+                    }
+                    
                 }
             });
         }
@@ -67,13 +76,13 @@
                             )
                         } else if (result.state === 2) {
                             Swal.fire({
-                                title: 'Ürün sepette zaten var sepeti güncellemek için yeni miktar giriniz.',
+                                title: 'Bu üründen zaten sepettinizde bulunmaktadır. Yeni miktar giriniz.',
                                 input: 'number',
                                 inputAttributes: {
                                     autocapitalize: 'off'
                                 },
                                 showCancelButton: true,
-                                confirmButtonText: 'Güncelle',
+                                confirmButtonText: 'Sepete Ekle',
                                 cancelButtonText: 'İptal',
                                 showLoaderOnConfirm: true,
                                 preConfirm: (newCount) => {
