@@ -81,7 +81,7 @@ namespace ECommerce.Controllers
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
             }
-            return RedirectToAction(nameof(ShoppingCard), "Home");
+            return View(nameof(Checkout),Payment);
         }
 
         public IActionResult ShoppingCard()

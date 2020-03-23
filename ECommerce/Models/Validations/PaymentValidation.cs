@@ -16,19 +16,14 @@ namespace ECommerce.Models.Validations
                 .Length(3, 20).WithMessage("Username min 3 max 20 characters")
                 .Matches(@"^[a-zA-ZÖöıİşçÇğĞÜüŞ''-'\s]+$").WithMessage("Special character cannot be entered");
 
-
             RuleFor(x => x.Surname)
                 .NotEmpty().WithMessage("Please input valid Surname.")
                 .Length(3, 20).WithMessage("Username min 3 max 20 characters")
                 .Matches(@"^[a-zA-ZÖöıİşçÇğĞÜüŞ''-'\s]+$").WithMessage("Special character cannot be entered");
 
-
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Please input valid Email.")
-                .Matches(@"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$").WithMessage("Not a valid email")
-                .EmailAddress().WithMessage("Please valid email adress.")
-                .When(x => !string.IsNullOrEmpty(x.Email));
-
+                .Matches(@"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$").WithMessage("Not a valid email");
 
             RuleFor(x => x.Phone)
                 .NotEmpty().WithMessage("Please input valid Phone.")
@@ -47,7 +42,7 @@ namespace ECommerce.Models.Validations
             RuleFor(x => x.CardNumber)
                 .NotEmpty().WithMessage("Please input valid CardNumber.")
                 .Length(16, 19).WithMessage("Card Number of 16 digit input.")
-                .Matches(@"^\d{1,16}$").WithMessage("Please input enter valid card number");
+                .Matches(@"^\d{4}-?\d{4}-?\d{4}-?\d{4}$").WithMessage("Please input enter valid card number");
 
             RuleFor(x => x.CardExpirationDate)
                .NotEmpty().WithMessage("Please input valid CardExpirationDate.")
