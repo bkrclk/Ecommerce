@@ -8,6 +8,7 @@ namespace ECommerce.Models
 {
     public class PaymentModel
     {
+        [Key]
         public int CustomerId { get; set; }
 
         //[Required(ErrorMessage = "Please input valid Name.")]

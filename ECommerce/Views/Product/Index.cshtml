@@ -1,0 +1,292 @@
+﻿@model IEnumerable<ECommerce.Models.ProductModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script>
+    function AddProductView() {
+
+        var productId = $("#labelId").text();
+        var addViewinputCount = $("#addViewinputCount").val();
+
+        if (addViewinputCount != 0) {
+            AddProduct(productId, addViewinputCount);
+        }
+        else {
+            Swal.fire({
+                title: 'Lütfen geçerli miktar sayısı giriniz!',
+                input: 'number',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Sepete Ekle',
+                cancelButtonText: 'İptal',
+                showLoaderOnConfirm: true,
+                preConfirm: (newCount) => {
+                    if (newCount <= 0 || newCount=="") {
+                         Swal.fire(
+                        'Geçerli bir değer giriniz!',
+                        '',
+                        'warning'
+                    )
+                    }
+                    else {
+                        AddProduct(productId, newCount);
+                    $("#addViewinputCount").val(newCount);
+                    }
+
+                }
+            });
+        }
+    }
+    function AddProduct(productId, count) {
+
+        Swal.fire({
+            title: 'Ürün sepete eklensin mi?',
+            text: '',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28A745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet',
+            cancelButtonText: 'İptal',
+
+        }).then((result) => {
+            if (result.value) {
+
+                $('#MyModal').modal('hide');
+                $('.asd').addClass = 'asd';
+
+                var sData = { productId: productId, count: count };
+                $.ajax({
+
+                    url: "/Home/AddToCard",
+                    data: sData,
+                    type: "GET",
+                    dataType: "json",
+                    cache: false,
+                    success: function (result) {
+                        CartitemCount();
+                        if (result.state === 1) {
+                            Swal.fire(
+                                'Sepete ekleme başarılı',
+                                '',
+                                'success'
+                            )
+                        } else if (result.state === 2) {
+                            Swal.fire({
+                                title: 'Bu üründen zaten sepettinizde bulunmaktadır. Yeni miktar giriniz.',
+                                input: 'number',
+                                inputAttributes: {
+                                    autocapitalize: 'off'
+                                },
+                                showCancelButton: true,
+                                confirmButtonText: 'Sepete Ekle',
+                                cancelButtonText: 'İptal',
+                                showLoaderOnConfirm: true,
+                                preConfirm: (newCount) => {
+
+                                    UpdateProduct(productId, newCount);
+                                }
+                            });
+                        }
+                        else if (result.state === 3) {
+                            UpdateProduct(productId, count);
+                        }
+                        else {
+                            Swal.fire(result.message, "", "error");
+                        }
+                    },
+                    error: function (jqXHR, textStatus) {
+                        alert("Hata meydana geldi.");
+                    }
+                });
+            }
+        })
+    }
+    function SelectProduct(productId) {
+        var sData = {
+            productId: productId
+        };
+        $.ajax({
+
+            url: "/Home/ViewProduct",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result) {
+
+                $("#labelId").text(result.id);
+                $("#labelCode").text(result.productCode);
+                $("#labelName").text(result.productName);
+                $("#labelDescription").text(result.description);
+                $("#labelPrice").text("$" + result.price);
+                $('#viewImg1').attr('href', result.image);
+                $('#viewImg2').attr('src', result.image);
+                $('#labelCategory').text(result.category);
+                $('#labelStock').text(result.quantity);
+
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
+
+        $("#MyModal").modal("toggle");
+    }
+
+    function CartitemCount() {
+        $.post("/Home/ItemControl", function (result) {
+            $("#itemCount").text(result);
+        })
+    }
+    function UpdateProduct(productId, count) {
+
+        var sData = { productId: productId, count: count };
+        $.ajax({
+
+            url: "/Home/AddToCard",
+            data: sData,
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function (result1) {
+                if (count <= result1.product.quantity) {
+                    CartitemCount();
+                    Swal.fire(
+                        'Güncelleme başarılı',
+                        '',
+                        'success'
+                    )
+                }
+                else {
+                    Swal.fire(
+                        'Yetersiz stok! Son ' + result1.product.quantity + ' adet ürün kaldı',
+                        '',
+                        'error'
+                    )
+                }
+            },
+            error: function (jqXHR, textStatus) {
+                alert("Hata meydana geldi.");
+            }
+        });
+    }
+</script>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+
+        <div class="row">
+
+            @foreach (var item in Model)
+            {
+                var img = item.Image;
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+
+
+                        <img onclick="SelectProduct(@item.Id)" src="@img" width="100%" class="img-responsive indeximg" />
+                        <div class="card-body">
+                            <p class="card-text font-weight-bold text-length">@item.ProductName</p>
+                            <p class="card-text ikisatıryazi">@item.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button id="viewBtn" type="button" class="btn btn-sm btn-secondary" onclick="SelectProduct(@item.Id)">Detail</button>
+
+                                    <button type="button" class="btn btn-sm btn-success" onclick="AddProduct(@item.Id,1)">Add to Card</button>
+                                </div>
+                                <small class="instock btn btn-warning"><i class="fas fa-cubes"></i> @item.Quantity</small>
+                                <img class="priceimg" src="~/img/price.jpg" />
+                                <small class="price">₺@item.Price</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<footer class="text-muted">
+    <div class="container">
+        <p class="float-right">
+            <a href="#"><img class="pageup" src="~/img/backtotop.png" /></a>
+        </p>
+    </div>
+</footer>
+
+<div class="modal fade product_view" id="MyModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" class="class pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a id="viewImg1" href="#" class="thumbnail" data-toggle="modal" data-target="#lightbox">
+                            <img id="viewImg2" src="" width="250" height="250">
+                        </a>
+
+                    </div>
+                    <div class="col-md-8">
+
+                        <p style="display:none"><label class="headertext" id="labelId"></label></p>
+                        <p><label class="headertext" id="labelName"></label></p>
+                        <p><label class="headertext" id="labelCode"></label></p>
+                        <p><label class="headertext" id="labelPrice"></label></p>
+                        <p><label class="headertext" id="labelCategory"></label></p>
+
+
+                        <div class="row">
+                            <div class="col-md-3 col-sm-3">
+                                <input id="addViewinputCount" type="number" class="form-control text-center " value="1">
+                            </div>
+                            <div class="col-md-4" style="margin-top:4px;">
+                                <button type="button" class="btn btn-sm btn-success" onclick="AddProductView()">Add to Card</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Tab -->
+                <div style="padding:30px">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#home">Description</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#menu1">İnfo</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content textsize">
+                        <div id="home" class="container tab-pane active">
+                            <span id="labelDescription"></span>
+                        </div>
+                        <div id="menu1" class="container tab-pane fade">
+                            <span>This Menu1 page description area.</span>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Tab End -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- LightBox -->
+<div id="lightbox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <button type="button" class="close hidden" data-dismiss="modal" aria-hidden="true">×</button>
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" alt="" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- LightBox End -->

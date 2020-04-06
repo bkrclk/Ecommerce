@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ECommerce.Context;
 using ECommerce.Models;
 using ECommerce.Models.Validations;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +29,7 @@ namespace ECommerce
         {
             services.AddTransient<IValidator<PaymentModel>, PaymentValidation>();
             services.AddControllersWithViews();
-
+            services.AddDbContext<ProductContext>(options => options.UseSqlServer(Configuration["DbConnection"]));
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromHours(1);

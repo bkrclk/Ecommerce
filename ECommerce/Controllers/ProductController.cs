@@ -1,31 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using ECommerce.Context;
+using ECommerce.Helpers;
+using ECommerce.Models;
+using ECommerce.Models.Validations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ECommerce.Models;
-using System.Net;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using ECommerce.Helpers;
-using ECommerce.Models.Validations;
-using FluentValidation.Results;
-using ECommerce.Context;
 
 namespace ECommerce.Controllers
 {
-    public class HomeController : Controller
+    public class ProductController : Controller
     {
         #region Properties
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<ProductController> _logger;
         private ProductContext _context;
+
         public static List<ProductModel> Products = new List<ProductModel>();
 
         #endregion
 
         #region Constructors
-        public HomeController(ILogger<HomeController> logger,ProductContext context)
+        public ProductController(ILogger<ProductController> logger, ProductContext context)
         {
             _logger = logger;
             _context = context;
@@ -59,31 +60,31 @@ namespace ECommerce.Controllers
         public IActionResult ConfirmPayment(PaymentModel Payment)
         {
 
-            PaymentValidation paymentValidation = new PaymentValidation();
-            ValidationResult result = paymentValidation.Validate(Payment);
-            if (result.IsValid)
-            {
-                var cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
+            //PaymentValidation paymentValidation = new PaymentValidation();
+            //ValidationResult result = paymentValidation.Validate(Payment);
+            //if (result.IsValid)
+            //{
+            //    var cart = SessionHelper.GetObjectFromJson<List<ProductModel>>(HttpContext.Session, "cart");
 
-                var ConfirmPayment = new ConfirmPaymentModel();
+            //    var ConfirmPayment = new ConfirmPaymentModel();
 
-                ConfirmPayment.Product = cart;
-                ConfirmPayment.Payment = Payment;
+            //    ConfirmPayment.Product = cart;
+            //    ConfirmPayment.Payment = Payment;
 
-                if (ConfirmPayment != null)
-                {
-                    return View(ConfirmPayment);
-                }
+            //    if (ConfirmPayment != null)
+            //    {
+            //        return View(ConfirmPayment);
+            //    }
 
-            }
-            else
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-            }
-            return View(nameof(Checkout),Payment);
+            //}
+            //else
+            //{
+            //    foreach (var error in result.Errors)
+            //    {
+            //        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            //    }
+            //}
+            return View(nameof(Checkout), Payment);
         }
 
         public IActionResult ShoppingCard()
@@ -103,15 +104,7 @@ namespace ECommerce.Controllers
         #region FunctionMethod
         public void ProductsBind()
         {
-            Products = _context.ProductModel.ToList();
-            //if (Products == null || Products.Count == 0)
-            //{
-            //    var path = System.IO.Path.GetFullPath(".\\wwwroot\\product.json");
-            //    var webClient = new WebClient();
-            //    var json = webClient.DownloadString(path);
-            //    Products = JsonConvert.DeserializeObject<List<ProductModel>>(json);
-            //}
-
+                Products = _context.ProductModel.ToList();
         }
 
         public IActionResult ViewProduct(int productId)
@@ -246,8 +239,9 @@ namespace ECommerce.Controllers
                 var updateProducts = Products.Find(q => q.Id == item.Id);
                 updateProducts.Quantity = updateProducts.Quantity - item.BasketCount;
             }
-            //var output = JsonConvert.SerializeObject(Products, Formatting.Indented);
             _context.SaveChanges();
+            //var output = JsonConvert.SerializeObject(Products, Formatting.Indented);
+
             //System.IO.File.WriteAllText(path, output);
 
             HttpContext.Session.Clear();
@@ -266,6 +260,5 @@ namespace ECommerce.Controllers
         #endregion
 
         #endregion
-
     }
 }
